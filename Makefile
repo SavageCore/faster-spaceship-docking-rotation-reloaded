@@ -18,7 +18,7 @@
 AMUMSS_HOME ?= $(HOME)/AMUMSS
 AMUMSS_LINUX ?= $(HOME)/Git/AMUMSS/linux
 
-VERSION      := 0.1.0
+VERSION      := 0.2.0
 
 MOD_SET      := Faster Spaceship Docking Rotation Reloaded
 
