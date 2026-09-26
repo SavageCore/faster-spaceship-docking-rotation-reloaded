@@ -23,6 +23,24 @@
                 <type name="Optional" />
               </typeDescriptor>
             </plugin>
+            <plugin name="5x">
+              <description>5x faster docking rotation</description>
+              <files>
+                <folder source="5x" destination="Faster Spaceship Docking Rotation Reloaded - 5x" priority="0" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
+            <plugin name="2x">
+              <description>2x faster docking rotation</description>
+              <files>
+                <folder source="2x" destination="Faster Spaceship Docking Rotation Reloaded - 2x" priority="0" />
+              </files>
+              <typeDescriptor>
+                <type name="Optional" />
+              </typeDescriptor>
+            </plugin>
           </plugins>
         </group>
       </optionalFileGroups>

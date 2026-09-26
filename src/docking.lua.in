@@ -6,7 +6,7 @@
 -- Original mod by FiatPax - https://www.nexusmods.com/profile/FiatPax
 -- https://www.nexusmods.com/nomanssky/mods/2250
 
-local VariantLabel = "@VARIANT_LABEL@" -- "Instant" or "10x"
+local VariantLabel = "@VARIANT_LABEL@" -- "Instant", "10x", "5x" or "2x"
 local DockingSpeed = @SPEED@           -- game default is 1
 local VariantDesc  = "@DESC@"
 

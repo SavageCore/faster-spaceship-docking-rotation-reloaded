@@ -22,7 +22,7 @@ HDR = os.path.join(HERE, "header-1300x372.jpg")
 FONT = os.path.join(HERE, "fonts", "GeosansLight-NMS.ttf")
 
 TITLE = "FASTER SPACESHIP DOCKING ROTATION RELOADED"
-SUBTITLE = "INSTANT  \u2022  10x"
+SUBTITLE = "INSTANT  \u2022  10x  \u2022  5x  \u2022  2x"
 
 # Vertical offset of the header crop band in source pixels
 HEADER_BAND_Y = 400

@@ -1,16 +1,18 @@
 # Faster Spaceship Docking Rotation Reloaded
 
-Rebuild of the NMS 3.88-era  [Faster Spaceship Docking Rotation](https://www.nexusmods.com/nomanssky/mods/2250) mod for Cosmos as a FOMOD so you can pick between Instant and 10x speeds, built natively on Linux with the
+Rebuild of the NMS 3.88-era  [Faster Spaceship Docking Rotation](https://www.nexusmods.com/nomanssky/mods/2250) mod for Cosmos as a FOMOD so you can pick between Instant, 10x, 5x and 2x speeds, built natively on Linux with the
 [AMUMSS Linux port](https://github.com/SavageCore/AMUMSS/tree/feat/linux-support) (WIP! Good simple test case.).
 
 ## Usage
 
-During installation, pick "Instant" or "10x" to set `DockingRotateSpeed`. The default value is 1.
+During installation, pick "Instant", "10x", "5x" or "2x" to set `DockingRotateSpeed`. The default value is 1.
 
 | Variant | `DockingRotateSpeed` |
 | --- | --- |
-| Instant | 100
+| Instant | 100 |
 | 10x | 10 |
+| 5x | 5 |
+| 2x | 2 |
 
 ## Build (on Linux)
 
@@ -20,12 +22,12 @@ Requires a full AMUMSS install at `~/AMUMSS` (override with
 
 ```sh
 make release      # clean rebuild + verify + pack dist/ zip (default)
-make release VERSION=0.1.0   # override version in zip name
+make release VERSION=0.2.0   # override version in zip name
 make verify       # sanity-check the built outputs
 make clean        # remove build/ and dist/
 ```
 
-`make build` temporarily stages the two scripts into
+`make build` temporarily stages the variant scripts into
 `$(AMUMSS_HOME)/ModScript` (existing content moved aside and restored),
 runs one `buildmod.sh --run-pipeline`, and collects the outputs.
 
