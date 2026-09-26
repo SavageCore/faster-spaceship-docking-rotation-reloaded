@@ -35,7 +35,7 @@ RENDERED_10X    := $(BUILD)/10x.lua
 DESC_INSTANT := instant docking rotation (rebuilt for current NMS)
 DESC_10X     := 10x faster docking rotation (rebuilt for current NMS)
 
-.PHONY: all release fomod build verify clean
+.PHONY: all release fomod build verify assets clean
 
 all: release
 
@@ -89,6 +89,11 @@ verify: build
 	@grep -q 'DockingRotateSpeed" value="10' "$(BUILD)/$(MOD_10X)/GLOBALS/GCSPACESHIPGLOBALS.GLOBAL.EXML" || (echo "BAD 10x value" >&2; exit 1)
 	@if grep -q '!#' "$(BUILD)/$(MOD_INSTANT)/GLOBALS/GCSPACESHIPGLOBALS.GLOBAL.EXML" "$(BUILD)/$(MOD_10X)/GLOBALS/GCSPACESHIPGLOBALS.GLOBAL.EXML"; then echo "marker tags present" >&2; exit 1; fi
 	@echo "verify: OK (instant=100, 10x=10, no marker tags)"
+
+# Nexus page images from assets/src (Pillow required). Outputs are
+# generated artifacts (gitignored) - reproducible via this target.
+assets: assets/src/docking-procedure.jpg assets/generate.py
+	python3 assets/generate.py
 
 clean:
 	rm -rf "$(BUILD)" "$(DIST)"

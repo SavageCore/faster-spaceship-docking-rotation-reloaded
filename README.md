@@ -1,7 +1,7 @@
 # Faster Spaceship Docking Rotation Reloaded
 
 Rebuild of the NMS 3.88-era  [Faster Spaceship Docking Rotation](https://www.nexusmods.com/nomanssky/mods/2250) mod for Cosmos as a FOMOD so you can pick between Instant and 10x speeds, built natively on Linux with the
-[AMUMSS Linux port](https://github.com/SavageCore/AMUMSS/feat/linux-support) (WIP! Good simple test case.).
+[AMUMSS Linux port](https://github.com/SavageCore/AMUMSS/tree/feat/linux-support) (WIP! Good simple test case.).
 
 ## Usage
 
@@ -12,7 +12,7 @@ During installation, pick "Instant" or "10x" to set `DockingRotateSpeed`. The de
 | Instant | 100
 | 10x | 10 |
 
-## Build
+## Build (on Linux)
 
 Requires a full AMUMSS install at `~/AMUMSS` (override with
 `AMUMSS_HOME=...`) with `MBINCompiler-linux` fetched
