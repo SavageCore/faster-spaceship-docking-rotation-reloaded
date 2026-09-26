@@ -1,0 +1,44 @@
+-- Faster Spaceship Docking Rotation Reloaded - 10x
+-- RENDERED FILE - do not edit; edit src/docking.lua.in and run make release.
+--
+-- Updated by SavageCore
+--
+-- Original mod by FiatPax - https://www.nexusmods.com/profile/FiatPax
+-- https://www.nexusmods.com/nomanssky/mods/2250
+
+local VariantLabel = "@VARIANT_LABEL@" -- "Instant" or "10x"
+local DockingSpeed = @SPEED@           -- game default is 1
+local VariantDesc  = "@DESC@"
+
+local ModName      = "Faster Spaceship Docking Rotation Reloaded"
+local OriginalModAuthor    = "Fiatpax -- LUA Script by gango90 aka netjunk"
+local ModAuthor    = "SavageCore"
+local GameVersion  = "v7.04" -- Cosmos
+local FileSource   = "GCSPACESHIPGLOBALS.GLOBAL.MBIN"
+
+NMS_MOD_DEFINITION_CONTAINER = {
+    ["MOD_FILENAME"]    = ModName.." - "..VariantLabel..".pak",
+    ["MOD_DESCRIPTION"] = VariantDesc.." - Originally created by "..OriginalModAuthor,
+    ["MOD_AUTHOR"]      = ModAuthor,
+    ["NMS_VERSION"]     = GameVersion,
+    ["MODIFICATIONS"]   =
+    {
+        {
+            ["MBIN_CHANGE_TABLE"]   =
+            {
+                {
+                    ["MBIN_FILE_SOURCE"]    = {FileSource},
+                    ["MXML_CHANGE_TABLE"]   =
+                    {
+                        {
+                            ["VALUE_CHANGE_TABLE"]  =
+                            {
+                                {"DockingRotateSpeed",DockingSpeed},
+                            }
+                        },
+                    }
+                },
+            }
+        },
+    }
+}
