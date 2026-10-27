@@ -32,7 +32,7 @@ runs one `buildmod.sh --run-pipeline`, and collects the outputs.
 
 ## Release
 
-`make release` creates `dist/Faster Spaceship Docking Rotation Reloaded.zip` which is the zip file to import into [Amethyst](https://github.com/ChrisDKN/Amethyst-Mod-Manager)/[Vortex](https://github.com/Nexus-Mods/Vortex) or upload to Nexus.
+`make release` creates `dist/Faster Spaceship Docking Rotation Reloaded.zip` which is the zip file to import into [Amethyst](https://github.com/ChrisDKN/Amethyst-Mod-Manager)/[Vortex](https://github.com/Nexus-Mods/Vortex) or upload to Nexus. For a manual install, copy the folder for the option you want into `GAMEDATA/MODS`.
 
 The zip is named after the mod and carries no version, because a mod manager
 names the installed mod after the archive file name and shows the version in a
