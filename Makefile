@@ -12,12 +12,16 @@
 # Game-update playbook (see README.md):
 #   1. fetch latest MBINCompiler into AMUMSS_HOME
 #   2. bump NMS_VERSION in src/*.lua to the new game version
-#   3. make release VERSION=x.y.z   (bump the mod version too)
-#   4. import + deploy + test in game
+#   3. bump VERSION below (the mod version, published on Nexus)
+#   4. make release, import + deploy + test in game
 
 AMUMSS_HOME ?= $(HOME)/AMUMSS
 AMUMSS_LINUX ?= $(HOME)/Git/AMUMSS/linux
 
+# The mod version, published as the version of the Nexus release. It is
+# deliberately not part of the mod name: the artifact is named after the mod
+# alone (see FOMOD_ZIP), because a mod manager names the installed mod after
+# the archive file name and shows the version in a column of its own.
 VERSION      := 0.2.0
 
 MOD_SET      := Faster Spaceship Docking Rotation Reloaded
@@ -52,12 +56,15 @@ SPEEDS := $(foreach v,$(VARIANT),$(v)=$(SPEED_$(v)))
 
 all: release
 
-release: clean build
+# clean runs before build runs before verify, so release must not be parallel.
+.NOTPARALLEL:
+
+release: clean build verify
 	@rm -rf "$(BUILD)/fomodz" && mkdir -p "$(BUILD)/fomodz/fomod" $(addprefix "$(BUILD)/fomodz/",$(VARIANT))
 	@set -e; for v in $(VARIANT); do cp -a "$(BUILD)/$(MOD_SET) - $$v/GLOBALS" "$(BUILD)/fomodz/$$v/"; done
 	@cp ModuleConfig.xml "$(BUILD)/fomodz/fomod/"
 	@mkdir -p "$(DIST)" && rm -f "$(FOMOD_ZIP)" && cd "$(BUILD)/fomodz" && zip -qr "$(shell pwd)/$(FOMOD_ZIP)" fomod $(VARIANT)
-	@echo "packed: $(FOMOD_ZIP)"
+	@echo "packed: $(FOMOD_ZIP) (version $(VERSION))"
 	@python3 -c "import xml.dom.minidom; xml.dom.minidom.parse('$(BUILD)/fomodz/fomod/ModuleConfig.xml'); print('ModuleConfig.xml: well-formed XML')"
 
 # Render the variant scripts from the single template. One pattern rule for
@@ -92,8 +99,10 @@ build: $(RENDERED)
 
 # Single zip with a FOMOD installer menu (choose a speed).
 # fomod/ lives at the zip root (that is how managers detect installers).
-# Version travels in the zip filename (Nexus convention).
-FOMOD_ZIP := $(DIST)/$(MOD_SET) $(VERSION).zip
+# The file is named after the mod and nothing else, for the same reason the
+# mod name carries no version: the file name is what a mod manager shows as
+# the mod name.
+FOMOD_ZIP := $(DIST)/$(MOD_SET).zip
 
 # Path to a variant's generated EXML.
 exml = $(BUILD)/$(MOD_SET) - $(1)/GLOBALS/GCSPACESHIPGLOBALS.GLOBAL.EXML
@@ -106,12 +115,17 @@ if grep -q '!#' "$(call exml,$(1))"; then echo "marker tags present in $(1)" >&2
 endef
 
 verify: build
+	@for n in "$$(sed -n 's:.*<moduleName>\(.*\)</moduleName>.*:\1:p' ModuleConfig.xml)" "$(MOD_SET)"; do \
+		if printf '%s' "$$n" | grep -qE '[vV]?[0-9]+(\.[0-9]+)+'; then \
+			echo "ERROR: the mod name must not carry a version: '$$n'" >&2; exit 1; \
+		fi; \
+	done
 	@set -e; $(foreach v,$(VARIANT),$(call VERIFY_VARIANT,$(v));)
 	@echo "verify: OK ($(SPEEDS), no marker tags)"
 
 # Nexus page images from assets/src (Pillow required). Outputs are
 # generated artifacts (gitignored) - reproducible via this target.
-assets: assets/src/docking-procedure.jpg assets/generate.py
+assets: assets/src/gallery-docking.jpg assets/generate.py
 	python3 assets/generate.py
 
 clean:

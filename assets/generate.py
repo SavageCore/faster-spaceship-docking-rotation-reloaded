@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 """Regenerate Nexus page images from the source screenshot.
 
-Deterministic rebuild of what was previously done ad-hoc:
-  assets/gallery-docking-1920x1080.jpg  (16:9 downscale, gallery slot)
-  assets/header-1300x372.jpg            (wide crop + title overlay, banner)
+  assets/gallery-1920x1080.jpg  (16:9 downscale, gallery slot)
+  assets/header-1300x372.jpg    (wide crop + title overlay, banner)
+
+The source is a cockpit view across a station's interior, with the landing
+bays lit on both sides. Two framings come out of it:
+
+  gallery  the whole frame, downscaled. Keeps the cockpit and the in-game
+           "INITIATING DOCKING PROCEDURE" banner, which is the point of the
+           mod.
+  header   a band cropped off the top and cut short on the right, so the
+           title has the dark gantry on the left to sit on. The band starts
+           below the in-game banner so the two do not overlap.
 
 Usage: python3 assets/generate.py   (or: make assets)
 Requires: Pillow (pip install Pillow). Typeface is vendored (see FONT).
@@ -13,8 +22,8 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "src", "docking-procedure.jpg")
-GAL = os.path.join(HERE, "gallery-docking-1920x1080.jpg")
+SRC = os.path.join(HERE, "src", "gallery-docking.jpg")
+GAL = os.path.join(HERE, "gallery-1920x1080.jpg")
 HDR = os.path.join(HERE, "header-1300x372.jpg")
 
 # In-game heading typeface, vendored (SIL OFL 1.1):
@@ -24,32 +33,47 @@ FONT = os.path.join(HERE, "fonts", "GeosansLight-NMS.ttf")
 TITLE = "FASTER SPACESHIP DOCKING ROTATION RELOADED"
 SUBTITLE = "INSTANT  \u2022  10x  \u2022  5x  \u2022  2x"
 
-# Vertical offset of the header crop band in source pixels
-HEADER_BAND_Y = 400
+# Header crop, in source pixels. The width is what trims the clutter off the
+# right, so the title has the dark gantry on the left to sit on.
+HDR_X = 0
+HDR_Y = 400
+HDR_W = 2133
+
+# Header size in output pixels.
+HDR_OUT_W = 1300
+HDR_OUT_H = 372
+
+# Title placement in the header.
+TITLE_X = 48
+TITLE_Y = 48
+TITLE_SIZE = 50
+SUBTITLE_SIZE = 30
 
 
 def main():
     img = Image.open(SRC).convert("RGB")
-    assert img.size == (2560, 1440), f"unexpected source size {img.size}"
+    assert img.size[0] * 9 == img.size[1] * 16, f"source is not 16:9: {img.size}"
+    assert img.size[0] >= HDR_W, f"source too narrow for the header crop: {img.size}"
 
     img.resize((1920, 1080), Image.LANCZOS).save(GAL, quality=92)
     print(f"wrote {GAL}")
 
-    w, h = img.size
-    band_h = int(w * 372 / 1300)
-    band = img.crop((0, HEADER_BAND_Y, w, HEADER_BAND_Y + band_h))
-    band = band.resize((1300, 372), Image.LANCZOS)
+    # The band height follows from the crop width, so the crop keeps the
+    # banner aspect no matter how it is retuned.
+    band_h = int(HDR_W * HDR_OUT_H / HDR_OUT_W)
+    band = img.crop((HDR_X, HDR_Y, HDR_X + HDR_W, HDR_Y + band_h))
+    band = band.resize((HDR_OUT_W, HDR_OUT_H), Image.LANCZOS)
     d = ImageDraw.Draw(band, "RGBA")
     # top-weighted gradient: Nexus overlays its own title bottom-left
-    for y in range(372):
-        a = int(150 * (1 - y / 371) ** 2)
-        d.rectangle([0, y, 1300, y + 1], fill=(0, 0, 0, a))
+    for y in range(HDR_OUT_H):
+        a = int(150 * (1 - y / (HDR_OUT_H - 1)) ** 2)
+        d.rectangle([0, y, HDR_OUT_W, y + 1], fill=(0, 0, 0, a))
     band = band.convert("RGB")
     d = ImageDraw.Draw(band)
-    fb = ImageFont.truetype(FONT, 50)
-    fs = ImageFont.truetype(FONT, 30)
-    d.text((48, 48), TITLE, font=fb, fill=(255, 255, 255))
-    d.text((50, 118), SUBTITLE, font=fs, fill=(255, 200, 120))
+    fb = ImageFont.truetype(FONT, TITLE_SIZE)
+    fs = ImageFont.truetype(FONT, SUBTITLE_SIZE)
+    d.text((TITLE_X, TITLE_Y), TITLE, font=fb, fill=(255, 255, 255))
+    d.text((TITLE_X + 2, TITLE_Y + 70), SUBTITLE, font=fs, fill=(255, 200, 120))
     band.save(HDR, quality=92)
     print(f"wrote {HDR}")
 
